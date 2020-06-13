@@ -72,7 +72,7 @@ const ProductStackScreen = ({ navigation }) => (
 );
 
 
-export default function Main() {
+const Main = () => {
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
@@ -82,3 +82,5 @@ export default function Main() {
    </NavigationContainer>
   );
 }
+
+export default Main;
