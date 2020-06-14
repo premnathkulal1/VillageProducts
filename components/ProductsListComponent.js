@@ -18,19 +18,19 @@ class ProductScreen extends React.Component{
 
     const All = ({ navigation }) => {
       return (
-        <Products name="all" />
+        <Products catogory="all" />
       );
     };
 
     const Craft = ({ navigation }) => {
       return (
-        <Products name="craft" />
+        <Products catogory="craft" />
       );
     }
 
     const Food = ({ navigation }) => {
       return (
-        <Products name="food" />
+        <Products catogory="food" />
       );
     }
 
@@ -41,7 +41,7 @@ class ProductScreen extends React.Component{
           activeTintColor: '#FFFFFF',
           inactiveTintColor: '#F8F8F8',
           style: {
-            backgroundColor: '#633689',
+            backgroundColor: '#512DA8',
           },
           labelStyle: {
             textAlign: 'center',

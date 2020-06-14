@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Button, View, Text } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContent } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
 import ProductScreen from './ProductsListComponent';
 import HomeScreen from './HomeComponent';
+import Drawercontent from './DrawerContent';
 
 const HomeStack = createStackNavigator();
 const ProductStack = createStackNavigator();
@@ -15,7 +16,7 @@ const HomeStackScreen = ({ navigation }) => (
     <HomeStack.Navigator 
       screenOptions = {{
         headerStyle: {
-          backgroundColor: '#009387'
+          backgroundColor: '#512DA8'
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -32,7 +33,7 @@ const HomeStackScreen = ({ navigation }) => (
                 reverse
                 name='menu' 
                 size={25} 
-                color='#009387'
+                color='#512DA8'
                 onPress= {() => {navigation.openDrawer()}}
               />
             )
@@ -45,7 +46,7 @@ const ProductStackScreen = ({ navigation }) => (
   <ProductStack.Navigator 
       screenOptions = {{
         headerStyle: {
-          backgroundColor: '#009387'
+          backgroundColor: '#512DA8'
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -62,7 +63,7 @@ const ProductStackScreen = ({ navigation }) => (
               reverse
               name='menu' 
               size={25} 
-              color='#009387'
+              color='#512DA8'
               onPress= {() => {navigation.openDrawer()}}
             />
           )
@@ -75,7 +76,7 @@ const ProductStackScreen = ({ navigation }) => (
 const Main = () => {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
+      <Drawer.Navigator initialRouteName="Home" drawerContent={props => <Drawercontent {...props}/>} >
         <Drawer.Screen name="Home" component={HomeStackScreen} />
         <Drawer.Screen name="Products" component={ProductStackScreen} />
       </Drawer.Navigator>
