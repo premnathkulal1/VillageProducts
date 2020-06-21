@@ -72,6 +72,30 @@ const Drawercontent = (props) => {
                                 label="Favorits"
                                 onPress={() => {props.navigation.navigate('Products')}}
                             />
+                            <DrawerItem 
+                                icon={({color, size}) => (
+                                    <Icon 
+                                        name='shoping-plus'
+                                        type='font-awesome'
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                label="Cart"
+                                onPress={() => {props.navigation.navigate('Products')}}
+                            />
+                            <DrawerItem 
+                                icon={({color, size}) => (
+                                    <Icon 
+                                        name='shoping-plus'
+                                        type='font-awesome'
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                label="Orders"
+                                onPress={() => {props.navigation.navigate('Products')}}
+                            />
                         </Drawer.Section>
                     </View>
                 </View>

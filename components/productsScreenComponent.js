@@ -1,7 +1,17 @@
 import * as React from 'react';
 import { Button, View, Text, Modal, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Card, Icon, Input, Rating, Image } from 'react-native-elements';
-import Data from '../db';
+//import Data from '../db';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
+import * as Animatable from 'react-native-animatable';
+
+const mapStateToProps = state => {
+  return {
+      dishes: state.dishes
+  }
+}
 
 class Products extends React.Component{
   constructor(props){
@@ -14,7 +24,7 @@ class Products extends React.Component{
   }
 
   toggleModal(id = "Jack Fruit Pickle (300 gm)"){
-    this.setState({ModelItem: Data.products.filter((item) => item.name === id)[0]});
+    this.setState({ModelItem: this.props.dishes.dishes.filter((item) => item.name === id)[0]});
     this.setState({showModal: !this.state.showModal});
   }
 
@@ -30,7 +40,7 @@ class Products extends React.Component{
             <View style={{ alignItems: 'center', height: 200 }}>
             <Image
               style={{ width: 100, height: 100 }}
-              source={require('./images/food_0.jpg')}
+              source={{uri: baseUrl+item.image}}
             />
             <Text style={styles.listItemName}>{item.name}</Text>
             <Text style={styles.listItemPrice}>{item.price+' Rs'}</Text>
@@ -40,57 +50,64 @@ class Products extends React.Component{
       );
     };
 
-    return(
-      <View>
-        <FlatList 
-          data = {this.state.catogory === 'all' ? Data.products : Data.products.filter((item) => item.category == this.state.catogory)}
-          renderItem = {({item}) => <ListItem item={item} />}
-          numColumns={2}
-        />
-        <Modal
-          animationType={'slide'}
-          transparent={false}
-          visible={this.state.showModal}
-          onDismiss={() => this.toggleModal()}
-          onRequestClose={() => this.toggleModal()}
-          style={{width: 100, height: 100}}
-          propagateSwipe={true}
-        >
-        <View style={styles.modal}>
-          <Image 
-            style={styles.modalImage}
-            source={require('./images/food_0.jpg')}
+    if(this.props.dishes.isLoading){
+      return(
+          <Loading />
+      );
+    }
+    else{
+      return(
+        <View>
+          <FlatList 
+            data = {this.state.catogory === 'all' ? this.props.dishes.dishes : this.props.dishes.dishes.filter((item) => item.category == this.state.catogory)}
+            renderItem = {({item}) => <ListItem item={item} />}
+            numColumns={2}
           />
-          <Text style={styles.modalTitle}>{this.state.ModelItem.name}</Text>
-          <Text style={styles.modalPrice}>{this.state.ModelItem.price + " Rs"}</Text>
-          <Text style={styles.modalCombo}>
-              {"Combo of " + this.state.ModelItem.combo + " pieces"}
-          </Text>
-          <Text style={styles.modalDescription}>{this.state.ModelItem.description + " Rs"}</Text>
+          <Modal
+            animationType={'slide'}
+            transparent={false}
+            visible={this.state.showModal}
+            onDismiss={() => this.toggleModal()}
+            onRequestClose={() => this.toggleModal()}
+            style={{width: 100, height: 100}}
+            propagateSwipe={true}
+          >
+            <View style={styles.modal}>
+              <Image 
+                style={styles.modalImage}
+                source={{uri: baseUrl+this.state.ModelItem.image}}
+              />
+              <Text style={styles.modalTitle}>{this.state.ModelItem.name}</Text>
+              <Text style={styles.modalPrice}>{this.state.ModelItem.price + " Rs"}</Text>
+              <Text style={styles.modalCombo}>
+                  {"Combo of " + this.state.ModelItem.combo + " pieces"}
+              </Text>
+              <Text style={styles.modalDescription}>{this.state.ModelItem.description + " Rs"}</Text>
+            </View>
+            <View style={styles.iconRow}>
+              <Icon 
+                  raised
+                  reverse
+                  name='heart'
+                  type='font-awesome'
+                  color='#f50'
+                  //onPress={() => props.favorite ? console.log('Already favorite') : props.onPress() }
+              />
+              <Icon
+                  raised
+                  reverse
+                  name='cart-plus'
+                  //name='shopping-cart'
+                  type='font-awesome'
+                  color='blue'
+                  //style={styles.cardItem}
+                  //onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)} 
+                />
+            </View>
+          </Modal>
         </View>
-        <View style={styles.iconRow}>
-          <Icon 
-              raised
-              reverse
-              name='heart'
-              type='font-awesome'
-              color='#f50'
-              //onPress={() => props.favorite ? console.log('Already favorite') : props.onPress() }
-          />
-          <Icon
-              raised
-              reverse
-              name='cart-plus'
-              //name='shopping-cart'
-              type='font-awesome'
-              color='blue'
-              //style={styles.cardItem}
-              //onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)} 
-            />
-        </View>
-        </Modal>
-      </View>
-    );
+      );
+    }
   }
 }
 
@@ -161,4 +178,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Products;
+export default connect(mapStateToProps)(Products);

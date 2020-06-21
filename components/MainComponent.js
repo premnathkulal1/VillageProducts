@@ -7,10 +7,22 @@ import { Icon } from 'react-native-elements';
 import ProductScreen from './ProductsListComponent';
 import HomeScreen from './HomeComponent';
 import Drawercontent from './DrawerContent';
+import { createAppContainer, SafeAreaView } from 'react-navigation';
+import { connect } from 'react-redux';
+import { fetchDishes } from '../redux/ActionCreators';
 
 const HomeStack = createStackNavigator();
 const ProductStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const mapStateToProps = state => {
+  return {
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes())
+});
 
 const HomeStackScreen = ({ navigation }) => (
     <HomeStack.Navigator 
@@ -73,7 +85,7 @@ const ProductStackScreen = ({ navigation }) => (
 );
 
 
-const Main = () => {
+const MainNavigator = () => {
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home" drawerContent={props => <Drawercontent {...props}/>} >
@@ -84,4 +96,22 @@ const Main = () => {
   );
 }
 
-export default Main;
+//const Main =  createAppContainer(MainNavigator);
+
+class Main extends React.Component {
+  componentDidMount() {
+    this.props.fetchDishes();
+    /*NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+    });*/
+  }
+
+  render() {
+    return(
+      <MainNavigator />
+    );
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
