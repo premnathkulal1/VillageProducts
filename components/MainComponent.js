@@ -7,6 +7,8 @@ import { Icon } from 'react-native-elements';
 import ProductScreen from './ProductsListComponent';
 import HomeScreen from './HomeComponent';
 import Drawercontent from './DrawerContent';
+import LoginScreen from './LoginComponent';
+import RegsterScreen from './SignUpComponent';
 import { createAppContainer, SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
 import { fetchDishes } from '../redux/ActionCreators';
@@ -91,6 +93,8 @@ const MainNavigator = () => {
       <Drawer.Navigator initialRouteName="Home" drawerContent={props => <Drawercontent {...props}/>} >
         <Drawer.Screen name="Home" component={HomeStackScreen} />
         <Drawer.Screen name="Products" component={ProductStackScreen} />
+        <Drawer.Screen name="Login" component={LoginScreen} />
+        <Drawer.Screen name="Register" component={RegsterScreen} />
       </Drawer.Navigator>
    </NavigationContainer>
   );

@@ -111,7 +111,8 @@ const Drawercontent = (props) => {
                             size={size}
                         />
                     )}
-                    label="Sign Out"
+                    label="Sign In"
+                    onPress={() => {props.navigation.navigate('Login')}}
                     //onPress={() => {signOut()}}
                 />
             </Drawer.Section>
