@@ -10,14 +10,23 @@ import { View,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUser, faLock, faAddressCard, } from '@fortawesome/free-solid-svg-icons';
 import Feather from 'react-native-vector-icons/Feather';
 import { ScrollView } from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { registerUser } from '../redux/ActionCreators';
 
-const RegsterScreen = ({ navigation }) => {
+const mapDispatchToProps = dispatch =>  ({
+    registerUser: (username, password, fullname, adress, admin) => dispatch(registerUser(username, password, fullname, adress, admin))
+});
+
+const RegsterScreen = (props) => {
 
     const [data, setData] = React.useState({
         username: '',
+        fullname: '',
+        adress: '',
         password: '',
         confirm_password: '',
         firstname: '',
@@ -27,7 +36,9 @@ const RegsterScreen = ({ navigation }) => {
         check_textInputChange: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
-        isPasswordMatch: true
+        isPasswordMatch: true,
+        isFullnameValid: true,
+        isAdressValid: true
     });
 
     const usernametextInputChange = (val) => {
@@ -49,7 +60,7 @@ const RegsterScreen = ({ navigation }) => {
     }
 
     const handlePasswordChange = (val) => {
-        if(val.length < 12){
+        if(val.length < 3){
             setData({
                 ...data,
                 isValidPassword: false
@@ -87,6 +98,38 @@ const RegsterScreen = ({ navigation }) => {
         });
     }
 
+    const registerHandle = (username, password, fullname, adress) => {
+        var admin = false;
+        if(username===''||password===''||fullname===''||adress===''){
+            setData({
+                ...data,
+                isValidUser: false,
+                isValidPassword: false,
+                check_textInputChange: false,
+                secureTextEntry: false,
+                confirm_secureTextEntry: false,
+                isFullnameValid: false,
+                isAdressValid: false
+            });
+        }
+        else if(username.length<6 || password.length<3 ){}
+        else if(fullname.length <= 0){
+            setData({
+                ...data,
+                isFullnameValid: false
+            });
+        }
+        else if(adress.length <= 0){
+            setData({
+                ...data,
+                isAdressValid: false
+            });
+        }
+        else{
+            props.registerUser(username, password, fullname, adress, admin);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -99,10 +142,7 @@ const RegsterScreen = ({ navigation }) => {
                 <ScrollView>
                 <Text style={styles.text_footer}>Username</Text>
                 <View style={styles.action}>
-                    <FontAwesome 
-                        name="user-o"
-                        size={20}
-                    />
+                <FontAwesomeIcon icon={faUser} size={20} color={"black"} />
                     <TextInput 
                         placeholder="Your Username"
                         placeholderTextColor="#666666"
@@ -128,14 +168,55 @@ const RegsterScreen = ({ navigation }) => {
                     </Animatable.View>
                 }
 
+                <Text style={[styles.text_footer, { marginTop: 35}]}>Fullname</Text>
+                <View style={styles.action}>
+                    <FontAwesomeIcon icon={faUser} size={20} color={"black"} />
+                    <TextInput 
+                        placeholder="Your Fullname"
+                        placeholderTextColor="#666666"
+                        style={styles.textInput}
+                        autoCapitalize="none"
+                        onChangeText={(val) => {
+                            setData({
+                                ...data,
+                                fullname: val
+                            });
+                        }}
+                    />
+                </View>
+                { data.isFullnameValid ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>This field Required</Text>
+                    </Animatable.View>
+                }
+
+                <Text style={[styles.text_footer, { marginTop: 35}]}>Adress</Text>
+                <View style={styles.action}>
+                    <FontAwesomeIcon icon={faAddressCard} size={20} color={"black"} />
+                    <TextInput 
+                        placeholder="Your Adress"
+                        placeholderTextColor="#666666"
+                        style={styles.textInput}
+                        autoCapitalize="none"
+                        onChangeText={(val) => {
+                            setData({
+                                ...data,
+                                adress: val
+                            });
+                        }}
+                    />
+                </View>
+                { data.isAdressValid ? null :
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>This field Required</Text>
+                    </Animatable.View>
+                }
+
                 <Text style={[styles.text_footer, {
                     marginTop: 35
                 }]}>Password</Text>
                 <View style={styles.action}>
-                    <Feather 
-                        name="lock"
-                        size={20}
-                    />
+                    <FontAwesomeIcon icon={faLock} size={20} color={"black"} />
                     <TextInput 
                         placeholder="Your Password"
                         placeholderTextColor="#666666"
@@ -171,13 +252,9 @@ const RegsterScreen = ({ navigation }) => {
                 <Text style={[styles.text_footer, {
                     //color: colors.text,
                     marginTop: 35
-                }]}>Password</Text>
+                }]}>Re Type Password</Text>
                 <View style={styles.action}>
-                    <Feather 
-                        name="lock"
-                        //color={colors.text}
-                        size={20}
-                    />
+                    <FontAwesomeIcon icon={faLock} size={20} color={"black"} />
                     <TextInput 
                         placeholder="Your Password"
                         placeholderTextColor="#666666"
@@ -206,14 +283,14 @@ const RegsterScreen = ({ navigation }) => {
                 </View>
                 { data.isPasswordMatch ? null : 
                 <Animatable.View animation="fadeInLeft" duration={500}>
-                    <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+                    <Text style={styles.errorMsg}>Password not matching.</Text>
                 </Animatable.View>
                 }
 
                 <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
-                        //onPress={() => {registerHandle( data.username, data.password )}}
+                        onPress={() => {registerHandle( data.username, data.password, data.fullname, data.adress )}}
                     >
                     <LinearGradient
                         colors={['#01ab9d', '#05375a']}
@@ -224,7 +301,7 @@ const RegsterScreen = ({ navigation }) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Login')}
+                        onPress={() => props.navigation.navigate('Login')}
                         style={[styles.signIn, {
                             borderColor: '#009387',
                             borderWidth: 1,
@@ -242,7 +319,7 @@ const RegsterScreen = ({ navigation }) => {
     );
 }
 
-export default RegsterScreen;
+export default connect(null, mapDispatchToProps)(RegsterScreen);
 
 const styles = StyleSheet.create({
     container: {
