@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { connect } from 'react-redux';
 import {
     useTheme,
     Avatar,
@@ -16,6 +17,17 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
+import { logoutUser } from '../redux/ActionCreators';
+
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
+    }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    logoutUser: () => dispatch(logoutUser())
+});
 
 const Drawercontent = (props) => {
     const paperTheme = useTheme();
@@ -103,24 +115,40 @@ const Drawercontent = (props) => {
             <Drawer.Section style={styles.drawerSection}>
             </Drawer.Section>
             <Drawer.Section style={styles.bottomDrawerSection}>
-                <DrawerItem 
-                    icon={({color, size}) => (
-                        <Icon 
-                            name="exit-to-app" 
-                            color={color}
-                            size={size}
+                {
+                    !props.auth.isAuthenticated ?
+                        <DrawerItem 
+                            icon={({color, size}) => (
+                                <Icon 
+                                    name="exit-to-app" 
+                                    color={color}
+                                    size={size}
+                                />
+                            )}
+                            label="Sign In"
+                            onPress={() => {props.navigation.navigate('Login')}}
                         />
-                    )}
-                    label="Sign In"
-                    onPress={() => {props.navigation.navigate('Login')}}
-                    //onPress={() => {signOut()}}
-                />
+                    :
+                        <DrawerItem 
+                            icon={({color, size}) => (
+                                <Icon 
+                                    name="exit-to-app" 
+                                    color={color}
+                                    size={size}
+                                />
+                            )}
+                            label="Logout"
+                            onPress={() => {props.logoutUser()}}
+                        />
+                }
             </Drawer.Section>
         </View>
     );
 }
 
-export default Drawercontent;
+//export default Drawercontent;
+export default connect(mapStateToProps, mapDispatchToProps)(Drawercontent);
+
 
 const styles = StyleSheet.create({
     drawerContent: {

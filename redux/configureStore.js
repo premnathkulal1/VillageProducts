@@ -2,6 +2,7 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { dishes } from './dishes';
+import { Auth } from './auth';
 import  { persistStore, persistCombineReducers } from 'redux-persist';
 //import storage from 'redux-persist/es/storage'
 import { AsyncStorage } from 'react-native'
@@ -16,7 +17,8 @@ export const ConfigureStore = () => {
 
     const store = createStore(
         persistCombineReducers( config, {
-            dishes
+            dishes: dishes,
+            auth: Auth
         }),
         applyMiddleware(thunk, logger)
     );

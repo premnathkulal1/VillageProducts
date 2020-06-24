@@ -42,7 +42,7 @@ const RegsterScreen = (props) => {
     });
 
     const usernametextInputChange = (val) => {
-        if(val.length < 6){
+        if(val.length < 4){
             setData({
                 ...data,
                 check_textInputChange: false,
@@ -60,7 +60,7 @@ const RegsterScreen = (props) => {
     }
 
     const handlePasswordChange = (val) => {
-        if(val.length < 3){
+        if(val.length < 8){
             setData({
                 ...data,
                 isValidPassword: false
@@ -112,7 +112,7 @@ const RegsterScreen = (props) => {
                 isAdressValid: false
             });
         }
-        else if(username.length<6 || password.length<3 ){}
+        else if(username.length<4 || password.length<8 ){}
         else if(fullname.length <= 0){
             setData({
                 ...data,
@@ -164,7 +164,7 @@ const RegsterScreen = (props) => {
                 </View>
                 { data.isValidUser ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Username must be 6 characters long.</Text>
+                        <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
                     </Animatable.View>
                 }
 
@@ -245,7 +245,7 @@ const RegsterScreen = (props) => {
                 </View>
                 { data.isValidPassword ? null : 
                     <Animatable.View animation="fadeInLeft" duration={500}>
-                        <Text style={styles.errorMsg}>Password must be 12 characters long.</Text>
+                        <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
                     </Animatable.View>
                 }
 
