@@ -10,7 +10,9 @@ import { View,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUser, faLock, faAddressCard, } from '@fortawesome/free-solid-svg-icons';
+import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 import Feather from 'react-native-vector-icons/Feather';
 
 function LoginScreen({ navigation }) {
@@ -29,11 +31,7 @@ function LoginScreen({ navigation }) {
                 //color: colors.text
             }]}>Username</Text>
             <View style={styles.action}>
-                <FontAwesome 
-                    name="user-o"
-                    //color={colors.text}
-                    size={20}
-                />
+                <FontAwesomeIcon icon={faUser} size={20} color={"black"} />
                 <TextInput 
                     placeholder="Your Username"
                     placeholderTextColor="#666666"
@@ -67,11 +65,7 @@ function LoginScreen({ navigation }) {
                 marginTop: 35
             }]}>Password</Text>
             <View style={styles.action}>
-                <Feather 
-                    name="lock"
-                    //color={colors.text}
-                    size={20}
-                />
+                <FontAwesomeIcon icon={faLock} size={20} color={"black"} />
                 <TextInput 
                     placeholder="Your Password"
                     placeholderTextColor="#666666"
@@ -131,6 +125,18 @@ function LoginScreen({ navigation }) {
                         color: '#009387'
                     }]}>Sign Up</Text>
                 </TouchableOpacity>
+                <Text style={{paddingTop: 10, paddingBottom: 10}}>Or</Text>
+                <TouchableOpacity
+                    style={styles.signIn}
+                    //onPress={() => {loginHandle( data.username, data.password )}}
+                >
+                <LinearGradient
+                    colors={['#008fff', '#aff']}
+                    style={styles.signIn}
+                >
+                    <FontAwesomeIcon icon={faFacebook} size={40} color={"blue"} />
+                </LinearGradient>
+                </TouchableOpacity>
             </View>
         </Animatable.View>
     </View>
@@ -148,10 +154,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         paddingHorizontal: 20,
-        paddingBottom: 50
+        paddingBottom: 40
     },
     footer: {
-        flex: 3,
+        flex: 6,
         backgroundColor: '#fff',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
