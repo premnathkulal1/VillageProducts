@@ -69,36 +69,6 @@ export const registerUser = (username, password, fullname, adress, admin) => dis
 }
 
 //Login 
-
-export const requestLogin = (creds) => {
-    return {
-        type: ActionTypes.LOGIN_REQUEST,
-        creds
-    }
-}
-  
-export const receiveLogin = (response) => {
-    return {
-        type: ActionTypes.LOGIN_SUCCESS,
-        token: response.token
-    }
-}
-  
-export const loginError = (message) => {
-    return {
-        type: ActionTypes.LOGIN_FAILURE,
-        message
-    }
-}
-
-const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('token', value)
-    } catch (e) {
-      // saving error
-    }
-}
-
 export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
     //console.log("Hello");
@@ -142,6 +112,75 @@ export const loginUser = (creds) => (dispatch) => {
     })
     .catch(error => dispatch(loginError(error.message)))
 };
+
+export const loginWithFacebookUser = (token) => (dispatch) => {
+    // We dispatch requestLogin to kickoff the call to the API
+    //console.log("Hello");
+    console.log("token 2 : "+token);
+
+    dispatch(requestLogin({"facebook": "true"}))
+
+    return fetch(baseUrl + 'users/facebook/token/', {
+        method: 'GET',
+        headers: { 
+            'Content-Type':'application/json',
+            'access_token': token
+        },
+        //body: JSON.stringify(creds)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+        },
+        error => {
+            throw error;
+        })
+    .then(response => response.json())
+    .then(response => {
+        if (response.success) {
+            // If login was successful, set the token in local storage
+            //alert(response.token)
+            AsyncStorage.setItem('token', response.token);
+            AsyncStorage.setItem('creds', JSON.stringify({"facebook": "true"}));
+            // Dispatch the success action
+            //dispatch(fetchFavorites());
+            console.log("token 3 : "+token);
+            dispatch(receiveLogin(response));
+        }
+        else {
+            var error = new Error('Error ' + response.status);
+            error.response = response;
+            throw error;
+        }
+    })
+    .catch(error => dispatch(loginError(error.message)))
+};
+
+export const requestLogin = (creds) => {
+    return {
+        type: ActionTypes.LOGIN_REQUEST,
+        creds
+    }
+}
+  
+export const receiveLogin = (response) => {
+    return {
+        type: ActionTypes.LOGIN_SUCCESS,
+        token: response.token
+    }
+}
+  
+export const loginError = (message) => {
+    return {
+        type: ActionTypes.LOGIN_FAILURE,
+        message
+    }
+}
 
 export const requestLogout = () => {
     return {

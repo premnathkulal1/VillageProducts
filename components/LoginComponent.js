@@ -8,15 +8,14 @@ import { View,
     ActivityIndicator
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import AsyncStorage from '@react-native-community/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faLock, faAddressCard, } from '@fortawesome/free-solid-svg-icons';
 import {faFacebook} from '@fortawesome/free-brands-svg-icons';
 import Feather from 'react-native-vector-icons/Feather';
-import { loginUser } from '../redux/ActionCreators';
-import { Loading } from './LoadingComponent';
+import { loginUser, loginWithFacebookUser } from '../redux/ActionCreators';
+import * as Facebook from 'expo-facebook';
 
 const mapStateToProps = state => {
     return {
@@ -25,7 +24,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    loginUser: (creds) => dispatch(loginUser(creds))
+    loginUser: (creds) => dispatch(loginUser(creds)),
+    loginWithFacebookUser: (token) => dispatch(loginWithFacebookUser(token))
 });
 
 const LoginScreen = (props) => {
@@ -66,6 +66,25 @@ const LoginScreen = (props) => {
             username: '',
             password: '',
         });
+    }
+
+    const facebookLogIn = async () => {
+        //alert("Hello");
+        Facebook.initializeAsync("1714345048744317", "villiageProducts");
+        try {
+          const {
+            type,
+            token
+          } = await Facebook.logInWithReadPermissionsAsync('1714345048744317', {
+            permissions: ['public_profile'],
+          });
+          if (type === 'success') {
+            props.loginWithFacebookUser(token)
+            //console.log("token 1 : "+token);
+          } 
+        } catch ({ message }) {
+          alert(`Facebook Login Error: ${message}`);
+        }
     }
 
     return (
@@ -181,7 +200,7 @@ const LoginScreen = (props) => {
                     <Text style={{paddingTop: 10, paddingBottom: 10}}>Or</Text>
                     <TouchableOpacity
                         style={styles.signIn}
-                        onPress={() => console.log(props.auth)}
+                        onPress={() => facebookLogIn()}
                     >
                     <LinearGradient
                         colors={['#008fff', '#aff']}
