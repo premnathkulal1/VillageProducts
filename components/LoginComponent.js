@@ -5,7 +5,8 @@ import { View,
     TextInput,
     Platform,
     StyleSheet ,
-    ActivityIndicator
+    ActivityIndicator,
+    Modal
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -65,6 +66,9 @@ const LoginScreen = (props) => {
             ...data,
             username: '',
             password: '',
+            isValidUser: true,
+            isValidPassword: true,
+            secureTextEntry: true
         });
     }
 
@@ -164,11 +168,6 @@ const LoginScreen = (props) => {
                         <Text style={styles.errorMsg}>Username and Password not matching</Text>
                     </Animatable.View>
                 }
-                
-                {   
-                    !props.auth.isLoading ? null:
-                    <ActivityIndicator size="large" color="#512DA8" />
-                }
 
                 <View style={styles.button}>
                     <TouchableOpacity
@@ -210,10 +209,27 @@ const LoginScreen = (props) => {
                     </LinearGradient>
                     </TouchableOpacity>
                 </View>
-                {
-                    !(props.auth.errMess===null && props.auth.isAuthenticated) ? null : props.navigation.navigate('Home')
-                }
             </Animatable.View>
+
+            {
+                !(props.auth.errMess===null && props.auth.isAuthenticated) ? null : props.navigation.navigate('Home')
+            }
+
+            {   
+                !props.auth.isLoading ? null:
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={true}
+                >
+                    <View style={styles.modal}>
+                        <View style={styles.loaddingModel}>
+                            <ActivityIndicator size={60} color="#512DA8" />
+                        </View>
+                    </View>
+                </Modal>
+            }
+
         </View>
     );
 }
@@ -286,5 +302,14 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
+    },
+    loaddingModel: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: 280,
+    },
+    modal: {
+        flex:  1,
+        backgroundColor: 'rgba(0,0,0,0.6)'
     }
   });

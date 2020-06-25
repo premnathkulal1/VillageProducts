@@ -6,7 +6,9 @@ import { View,
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    Modal,
+    ActivityIndicator
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +18,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import { ScrollView } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { registerUser } from '../redux/ActionCreators';
+
+const mapStateToProps = state => {
+    return {
+        register: state.register
+    }
+}
 
 const mapDispatchToProps = dispatch =>  ({
     registerUser: (username, password, fullname, adress, admin) => dispatch(registerUser(username, password, fullname, adress, admin))
@@ -29,8 +37,6 @@ const RegsterScreen = (props) => {
         adress: '',
         password: '',
         confirm_password: '',
-        firstname: '',
-        lasttname: '',
         isValidUser: true,
         isValidPassword: true,
         check_textInputChange: false,
@@ -38,10 +44,15 @@ const RegsterScreen = (props) => {
         confirm_secureTextEntry: true,
         isPasswordMatch: true,
         isFullnameValid: true,
-        isAdressValid: true
+        isAdressValid: true,
+        isWrongUsername: false,
     });
 
     const usernametextInputChange = (val) => {
+        setData({
+            ...data,
+            isWrongUsername: false
+        }) 
         if(val.length < 4){
             setData({
                 ...data,
@@ -59,36 +70,18 @@ const RegsterScreen = (props) => {
         }
     }
 
-    const handlePasswordChange = (val) => {
-        if(val.length < 8){
-            setData({
-                ...data,
-                isValidPassword: false
-            });
-        }
-        else{
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: true
-            });
-        }
+    const handlePasswordChange = (val) =>{
+        setData({
+            ...data,
+            password: val
+        });
     }
 
-    const mathPassword = (val) => {
-        if(data.password === val){
-            setData({
-                ...data,
-                password: val,
-                isPasswordMatch: true
-            });
-        }
-        else{
-            setData({
-                ...data,
-                isPasswordMatch: false
-            });
-        }
+    const handleConfirmPasswordChange = (val) => {
+        setData({
+            ...data,
+            confirm_password: val,
+        });
     }
 
     const updateSecureTextEntry = () => {
@@ -100,19 +93,25 @@ const RegsterScreen = (props) => {
 
     const registerHandle = (username, password, fullname, adress) => {
         var admin = false;
-        if(username===''||password===''||fullname===''||adress===''){
+        if(username.length<4){
             setData({
                 ...data,
-                isValidUser: false,
-                isValidPassword: false,
                 check_textInputChange: false,
-                secureTextEntry: false,
-                confirm_secureTextEntry: false,
-                isFullnameValid: false,
-                isAdressValid: false
+                isValidUser: false
+            });
+        } 
+        else if(password.length<8){
+            setData({
+                ...data,
+                isValidPassword: false
             });
         }
-        else if(username.length<4 || password.length<8 ){}
+        else if(!(data.confirm_password === password)){
+            setData({
+                ...data,
+                isPasswordMatch: false
+            });
+        }
         else if(fullname.length <= 0){
             setData({
                 ...data,
@@ -127,6 +126,20 @@ const RegsterScreen = (props) => {
         }
         else{
             props.registerUser(username, password, fullname, adress, admin);
+             setData({
+                ...data,
+                password: '',
+                confirm_password: '',
+                isValidUser: true,
+                isValidPassword: true,
+                check_textInputChange: false,
+                secureTextEntry: true,
+                confirm_secureTextEntry: true,
+                isPasswordMatch: true,
+                isFullnameValid: true,
+                isAdressValid: true,
+                isWrongUsername: false,
+            })
         }
     }
 
@@ -150,17 +163,32 @@ const RegsterScreen = (props) => {
                         autoCapitalize="none"
                         onChangeText={(val) => usernametextInputChange(val)}
                     />
-                    {data.check_textInputChange ? 
-                    <Animatable.View
-                        animation="bounceIn"
-                    >
-                        <Feather 
-                            name="check-circle"
-                            color="green"
-                            size={20}
-                        />
-                    </Animatable.View>
-                    : null}
+                    {
+                        data.check_textInputChange ? 
+                            <Animatable.View
+                                animation="bounceIn"
+                            >
+                                <Feather 
+                                    name="check-circle"
+                                    color="green"
+                                    size={20}
+                                />
+                            </Animatable.View>
+                        :  
+                            !props.register.errMess? 
+                                null 
+                            : 
+                                <Animatable.View
+                                    animation="bounceIn"
+                                >
+                                    <Feather 
+                                        name="alert-circle"
+                                        color="red"
+                                        size={20}
+                                    />
+                                </Animatable.View>
+                    
+                    }
                 </View>
                 { data.isValidUser ? null :
                     <Animatable.View animation="fadeInLeft" duration={500}>
@@ -189,7 +217,6 @@ const RegsterScreen = (props) => {
                         <Text style={styles.errorMsg}>This field Required</Text>
                     </Animatable.View>
                 }
-
                 <Text style={[styles.text_footer, { marginTop: 35}]}>Adress</Text>
                 <View style={styles.action}>
                     <FontAwesomeIcon icon={faAddressCard} size={20} color={"black"} />
@@ -223,7 +250,8 @@ const RegsterScreen = (props) => {
                         style={styles.textInput}
                         autoCapitalize="none"
                         secureTextEntry={data.secureTextEntry ? true : false}
-                        onChangeText={(val) => handlePasswordChange(val)}
+                        value={data.password}
+                        onChangeText = {(val) => handlePasswordChange(val)}
                     />
                     <TouchableOpacity
                         onPress={() => updateSecureTextEntry()}
@@ -261,7 +289,9 @@ const RegsterScreen = (props) => {
                         style={styles.textInput}
                         autoCapitalize="none"
                         secureTextEntry={data.secureTextEntry ? true : false}
-                        onChangeText={(val) => mathPassword(val)}
+                        value={data.confirm_password}
+                        onChangeText = {(val) => handleConfirmPasswordChange(val)}
+
                     />
                     <TouchableOpacity
                         onPress={() => updateSecureTextEntry()}
@@ -315,11 +345,28 @@ const RegsterScreen = (props) => {
                 </View>
                 </ScrollView>
             </Animatable.View>
+
+
+            {   
+                !props.register.isLoading ? null :
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={true}
+                >
+                    <View style={styles.modal}>
+                        <View style={styles.loaddingModel}>
+                            <ActivityIndicator size={60} color="#512DA8" />
+                        </View>
+                    </View>
+                </Modal>
+            }
+            {console.log(props.register)}
         </View>
     );
 }
 
-export default connect(null, mapDispatchToProps)(RegsterScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(RegsterScreen);
 
 const styles = StyleSheet.create({
     container: {
@@ -387,5 +434,14 @@ const styles = StyleSheet.create({
     textSign: {
         fontSize: 18,
         fontWeight: 'bold'
+    },
+    loaddingModel: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: 280,
+    },
+    modal: {
+        flex:  1,
+        backgroundColor: 'rgba(0,0,0,0.6)'
     }
   });

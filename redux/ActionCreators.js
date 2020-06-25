@@ -42,6 +42,7 @@ export const addDishes = (dishes) => ({
 
 // Register
 export const registerUser = (username, password, fullname, adress, admin) => dispatch => {
+    dispatch(requesRegister())
     return fetch(baseUrl + 'users/signup', {
         method: "POST",
         body: JSON.stringify({username, password, fullname, adress, admin}),
@@ -53,7 +54,8 @@ export const registerUser = (username, password, fullname, adress, admin) => dis
 
     .then(response => {
         if (response.ok) {
-          return response;
+            dispatch(receiveRegister(response));
+            return response;
         } else {
           var error = new Error('Error ' + response.status + ': ' + response.statusText);
           error.response = response;
@@ -64,8 +66,28 @@ export const registerUser = (username, password, fullname, adress, admin) => dis
             throw error;
       })
     .then(response => response.json())
-    .then(response => { console.log('Register', response); alert('Registration successful!\n'); })
-    .catch(error =>  { console.log('Register', error.message); alert('Your Registration unsuccessful\n'); });
+    .then(response => { console.log('Register', response); alert("Successfully Registerd") })
+    .catch(error => dispatch(registerError(error.message)))
+}
+
+
+export const requesRegister = () => {
+    return {
+        type: ActionTypes.REGISTER_REQUEST,
+    }
+}
+  
+export const receiveRegister = (response) => {
+    return {
+        type: ActionTypes.REGISTER_SUCCESS,
+    }
+}
+  
+export const registerError = (message) => {
+    return {
+        type: ActionTypes.REGISTER_FAILURE,
+        message
+    }
 }
 
 //Login 
@@ -112,6 +134,7 @@ export const loginUser = (creds) => (dispatch) => {
     })
     .catch(error => dispatch(loginError(error.message)))
 };
+
 
 export const loginWithFacebookUser = (token) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
