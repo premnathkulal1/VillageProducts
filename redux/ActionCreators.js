@@ -3,7 +3,7 @@ import { baseUrl } from '../shared/baseUrl';
 import AsyncStorage from '@react-native-community/async-storage';
 
 // Products
-export const fetchDishes = () => (dispatch) => {
+export const fetchProducts = () => (dispatch) => {
   dispatch(dishesLoading(true));
 
   return fetch(baseUrl + 'products')
@@ -169,7 +169,6 @@ export const loginWithFacebookUser = (token) => (dispatch) => {
             // If login was successful, set the token in local storage
             //alert(response.token)
             AsyncStorage.setItem('token', response.token);
-            AsyncStorage.setItem('creds', JSON.stringify({"facebook": "true"}));
             // Dispatch the success action
             //dispatch(fetchFavorites());
             console.log("token 3 : "+token);
@@ -194,7 +193,7 @@ export const requestLogin = (creds) => {
 export const receiveLogin = (response) => {
     return {
         type: ActionTypes.LOGIN_SUCCESS,
-        token: response.token
+        token: response.token,
     }
 }
   

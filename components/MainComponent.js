@@ -11,7 +11,7 @@ import LoginScreen from './LoginComponent';
 import RegsterScreen from './SignUpComponent';
 import { createAppContainer, SafeAreaView } from 'react-navigation';
 import { connect } from 'react-redux';
-import { fetchDishes } from '../redux/ActionCreators';
+import { fetchProducts } from '../redux/ActionCreators';
 
 const HomeStack = createStackNavigator();
 const ProductStack = createStackNavigator();
@@ -23,7 +23,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  fetchDishes: () => dispatch(fetchDishes())
+  fetchProducts: () => dispatch(fetchProducts())
 });
 
 const HomeStackScreen = ({ navigation }) => (
@@ -86,7 +86,6 @@ const ProductStackScreen = ({ navigation }) => (
   </ProductStack.Navigator>
 );
 
-
 const MainNavigator = () => {
   return (
     <NavigationContainer>
@@ -104,7 +103,7 @@ const MainNavigator = () => {
 
 class Main extends React.Component {
   componentDidMount() {
-    this.props.fetchDishes();
+    this.props.fetchProducts();
     /*NetInfo.addEventListener(state => {
       console.log("Connection type", state.type);
       console.log("Is connected?", state.isConnected);

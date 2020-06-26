@@ -9,7 +9,7 @@ import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
   return {
-      dishes: state.dishes
+      products: state.products
   }
 }
 
@@ -24,7 +24,7 @@ class Products extends React.Component{
   }
 
   toggleModal(id = "Jack Fruit Pickle (300 gm)"){
-    this.setState({ModelItem: this.props.dishes.dishes.filter((item) => item.name === id)[0]});
+    this.setState({ModelItem: this.props.products.products.filter((item) => item.name === id)[0]});
     this.setState({showModal: !this.state.showModal});
   }
 
@@ -50,7 +50,7 @@ class Products extends React.Component{
       );
     };
 
-    if(this.props.dishes.isLoading){
+    if(this.props.products.isLoading){
       return(
           <Loading />
       );
@@ -59,7 +59,7 @@ class Products extends React.Component{
       return(
         <View>
           <FlatList 
-            data = {this.state.catogory === 'all' ? this.props.dishes.dishes : this.props.dishes.dishes.filter((item) => item.category == this.state.catogory)}
+            data = {this.state.catogory === 'all' ? this.props.products.products : this.props.products.products.filter((item) => item.category == this.state.catogory)}
             renderItem = {({item}) => <ListItem item={item} />}
             numColumns={2}
           />

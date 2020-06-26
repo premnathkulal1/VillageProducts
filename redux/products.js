@@ -1,19 +1,19 @@
 import * as ActioTypes from './ActionTypes';
 
-export const dishes = (state = {
+export const Products = (state = {
     isLoading: true,
     errMess: null,
-    dishes: []
+    products: []
 }, action) => {
     switch(action.type) {
         case ActioTypes.ADD_PRODUCT:
-            return {...state, isLoading: false, errMess: null, dishes: action.payload};
+            return {...state, isLoading: false, errMess: null, products: action.payload};
         
         case ActioTypes.PRODUCT_LOADING:
-            return {...state, isLoading: true, errMess: null, dishes: []};
+            return {...state, isLoading: true, errMess: null, products: []};
 
         case ActioTypes.PRODUCT_FAILED:
-            return {...state, isLoading: false, errMess: action.payload, dishes: []};
+            return {...state, isLoading: false, errMess: action.payload, products: []};
         
         default:
             return state;

@@ -83,8 +83,15 @@ const LoginScreen = (props) => {
             permissions: ['public_profile'],
           });
           if (type === 'success') {
+
+            fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email`)
+                .then(response => response.json())
+                .then(data => {
+                    AsyncStorage.setItem('creds', JSON.stringify(data));
+                })
+                .catch(e => console.log(e))
+
             props.loginWithFacebookUser(token)
-            //console.log("token 1 : "+token);
           } 
         } catch ({ message }) {
           alert(`Facebook Login Error: ${message}`);

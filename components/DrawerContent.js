@@ -1,17 +1,15 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faUser, faLock, faAddressCard, faHome, faList, faHeart, faCartArrowDown, faCartPlus, faShoppingBag, faSignOutAlt, faSign, faSignInAlt, } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import {
     useTheme,
     Avatar,
     Title,
     Caption,
-    Paragraph,
-    Drawer,
-    Text,
-    TouchableRipple,
-    Switch
+    Drawer
 } from 'react-native-paper';
 import {
     DrawerContentScrollView,
@@ -44,66 +42,57 @@ const Drawercontent = (props) => {
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+
+                                {
+                                    props.auth.isAuthenticated ?
+                                        <View>
+                                        <Title style={styles.title}>{props.auth.user.username}</Title>
+                                        <Caption style={styles.caption}>@{props.auth.user.username}</Caption>
+                                        </View>
+                                    :
+                                        <View>
+                                        <Title style={styles.title}>Villiage Products</Title>
+                                        <Caption style={styles.caption}>@v_products</Caption>
+                                        </View>
+                                }
+                                {
+                                    console.log(props.auth)
+                                }
                             </View>
                         </View>
 
                         <Drawer.Section style={styles.drawerSection}>
                             <DrawerItem 
-                                icon={({color, size}) => (
-                                    <Icon 
-                                        name="home" 
-                                        color={color}
-                                        size={size}
-                                    />
+                                icon={() => (
+                                    <FontAwesomeIcon icon={faHome} size={20} color={"black"} />
                                 )}
                                 label="Home"
                                 onPress={() => {props.navigation.navigate('Home')}}
                             />
                             <DrawerItem 
-                                icon={({color, size}) => (
-                                    <Icon 
-                                        name="list" 
-                                        color={color}
-                                        size={size}
-                                    />
+                                icon={() => (
+                                    <FontAwesomeIcon icon={faList} size={20} color={"black"} />
                                 )}
                                 label="Products"
                                 onPress={() => {props.navigation.navigate('Products')}}
                             />
                             <DrawerItem 
-                                icon={({color, size}) => (
-                                    <Icon 
-                                        name='heart'
-                                        type='font-awesome'
-                                        color={color}
-                                        size={size}
-                                    />
+                                icon={() => (
+                                    <FontAwesomeIcon icon={faHeart} size={20} color={"black"} />
                                 )}
                                 label="Favorits"
                                 onPress={() => {props.navigation.navigate('Products')}}
                             />
                             <DrawerItem 
-                                icon={({color, size}) => (
-                                    <Icon 
-                                        name='shoping-plus'
-                                        type='font-awesome'
-                                        color={color}
-                                        size={size}
-                                    />
+                                icon={() => (
+                                    <FontAwesomeIcon icon={faCartPlus} size={20} color={"black"} />
                                 )}
                                 label="Cart"
                                 onPress={() => {props.navigation.navigate('Products')}}
                             />
                             <DrawerItem 
-                                icon={({color, size}) => (
-                                    <Icon 
-                                        name='shoping-plus'
-                                        type='font-awesome'
-                                        color={color}
-                                        size={size}
-                                    />
+                                icon={() => (
+                                    <FontAwesomeIcon icon={faShoppingBag} size={20} color={"black"} />
                                 )}
                                 label="Orders"
                                 onPress={() => {props.navigation.navigate('Products')}}
@@ -119,23 +108,15 @@ const Drawercontent = (props) => {
                     !props.auth.isAuthenticated ?
                         <DrawerItem 
                             icon={({color, size}) => (
-                                <Icon 
-                                    name="exit-to-app" 
-                                    color={color}
-                                    size={size}
-                                />
+                                <FontAwesomeIcon icon={faSignInAlt} size={20} color={"black"} />
                             )}
                             label="Sign In"
                             onPress={() => {props.navigation.navigate('Login')}}
                         />
                     :
                         <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                    name="exit-to-app" 
-                                    color={color}
-                                    size={size}
-                                />
+                            icon={() => (
+                                <FontAwesomeIcon icon={faSignOutAlt} size={20} color={"black"} />
                             )}
                             label="Logout"
                             onPress={() => {props.logoutUser()}}

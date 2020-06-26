@@ -1,7 +1,7 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
-import { dishes } from './dishes';
+import { Products } from './products';
 import { Auth } from './auth';
 import { Register } from './register';
 import  { persistStore, persistCombineReducers } from 'redux-persist';
@@ -18,7 +18,7 @@ export const ConfigureStore = () => {
 
     const store = createStore(
         persistCombineReducers( config, {
-            dishes: dishes,
+            products: Products,
             auth: Auth,
             register: Register
         }),
