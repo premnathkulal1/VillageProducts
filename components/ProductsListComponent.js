@@ -16,21 +16,21 @@ class ProductScreen extends React.Component{
 
   render(){
 
-    const All = ({ navigation }) => {
+    const All = () => {
       return (
-        <Products catogory="all" />
+        <Products catogory="all" navigation={this.props.navigation} />
       );
     };
 
-    const Craft = ({ navigation }) => {
+    const Craft = () => {
       return (
-        <Products catogory="craft" />
-      );
+        <Products catogory="craft" navigation={this.props.navigation} />
+      )
     }
 
-    const Food = ({ navigation }) => {
+    const Food = () => {
       return (
-        <Products catogory="food" />
+        <Products catogory="food" navigation={this.props.navigation} />
       );
     }
 

@@ -9,7 +9,8 @@ import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
   return {
-      products: state.products
+      products: state.products,
+      auth: state.auth
   }
 }
 
@@ -28,6 +29,11 @@ class Products extends React.Component{
     this.setState({showModal: !this.state.showModal});
   }
 
+  static navigationOptions = {
+    title: 'Products'
+  }
+
+  
   render(){
 
     const ListItem = ({item}) => {
@@ -49,6 +55,10 @@ class Products extends React.Component{
         </TouchableOpacity>
       );
     };
+
+    const LoginScreen = () => {
+      this.props.navigation.navigate('Products')
+    }
 
     if(this.props.products.isLoading){
       return(
@@ -85,24 +95,36 @@ class Products extends React.Component{
               <Text style={styles.modalDescription}>{this.state.ModelItem.description + " Rs"}</Text>
             </View>
             <View style={styles.iconRow}>
-              <Icon 
-                  raised
-                  reverse
-                  name='heart'
-                  type='font-awesome'
-                  color='#f50'
-                  //onPress={() => props.favorite ? console.log('Already favorite') : props.onPress() }
-              />
-              <Icon
-                  raised
-                  reverse
-                  name='cart-plus'
-                  //name='shopping-cart'
-                  type='font-awesome'
-                  color='blue'
-                  //style={styles.cardItem}
-                  //onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)} 
-                />
+              {
+                  this.props.auth.isAuthenticated?
+                    <>
+                      <Icon 
+                        raised
+                        reverse
+                        name='heart'
+                        type='font-awesome'
+                        color='#f50'
+                        //onPress={() => props.favorite ? console.log('Already favorite') : props.onPress() }
+                      />
+                      <Icon
+                        raised
+                        reverse
+                        name='cart-plus'
+                        //name='shopping-cart'
+                        type='font-awesome'
+                        color='blue'
+                        //style={styles.cardItem}
+                        //onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)} 
+                      />
+                    </>
+                  :
+                  <Text 
+                    style={styles.loginButton}
+                    onPress={() => {this.setState({showModal: false}), this.props.navigation.navigate('Login')}}
+                  >
+                    Login
+                  </Text>
+              }
             </View>
           </Modal>
         </View>
@@ -160,6 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     textAlign: 'center',
     color: 'green',
+    paddingTop: 10,
     marginBottom: 20
   },
   modalDescription: {
@@ -175,6 +198,16 @@ const styles = StyleSheet.create({
   modalImage: {
     width: 200, 
     height: 200
+  },
+  loginButton: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    color: 'green',
+    borderWidth:  2,
+    borderRadius: 0,
+    borderEndWidth: 100
   }
 })
 

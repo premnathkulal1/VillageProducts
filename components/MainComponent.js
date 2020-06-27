@@ -16,6 +16,7 @@ import { fetchProducts } from '../redux/ActionCreators';
 const HomeStack = createStackNavigator();
 const ProductStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
 const mapStateToProps = state => {
   return {
   }

@@ -224,7 +224,7 @@ const LoginScreen = (props) => {
             }
 
             {   
-                !(props.auth.isLoading) ? null:
+                !(props.auth.isLoading || props.userinfo.isLoading) ? null:
                 <Modal
                     animationType="slide"
                     transparent={true}
