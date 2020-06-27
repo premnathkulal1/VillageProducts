@@ -6,25 +6,8 @@ import * as React from 'react';
 // based on a token being in local storage. In a real app,
 // we would also want a util to check if the token is expired.
 
-const getData = async () => {
-    try {
-        const token = await AsyncStorage.getItem('token')
-        const creds = await AsyncStorage.getItem('creds')
-        return [token, creds]
-    } catch(e) {
-      // error reading value
-    }
-}
-
-let token, creds;
-
-getData()
-.then( (imgSize) =>
-        {
-            token = imgSize[0]
-            creds = imgSize[1]
-        }
-)
+const token = global.token
+const creds = global.creds 
 
 export const Auth = (state = {
         isLoading: false,

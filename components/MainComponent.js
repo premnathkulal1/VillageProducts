@@ -16,7 +16,6 @@ import { fetchProducts } from '../redux/ActionCreators';
 const HomeStack = createStackNavigator();
 const ProductStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
 const mapStateToProps = state => {
   return {
   }
@@ -102,6 +101,7 @@ const MainNavigator = () => {
 //const Main =  createAppContainer(MainNavigator);
 
 class Main extends React.Component {
+
   componentDidMount() {
     this.props.fetchProducts();
     /*NetInfo.addEventListener(state => {

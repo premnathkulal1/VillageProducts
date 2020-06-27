@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 // Products
 export const fetchProducts = () => (dispatch) => {
-  dispatch(dishesLoading(true));
-
+  dispatch(productsLoading(true));
   return fetch(baseUrl + 'products')
       .then(response => {
           if (response.ok) {
@@ -17,27 +16,27 @@ export const fetchProducts = () => (dispatch) => {
               throw error;
           }
       },
-      error => {
+      error => { 
           var errmess = new Error(error.message);
           throw errmess;
       })
       .then(response => response.json())
-      .then(dishes => dispatch(addDishes(dishes)))
-      .catch(error => dispatch(dishesFailed(error.message)));
+      .then(products => dispatch(addProducts(products)))
+      .catch(error => dispatch(productsFailed(error.message)));
 }
 
-export const dishesLoading = () => ({
+export const productsLoading = () => ({
     type: ActionTypes.PRODUCT_LOADING
 });
 
-export const dishesFailed = (errmess) => ({
+export const productsFailed = (errmess) => ({
     type: ActionTypes.PRODUCT_FAILED,
     payload: errmess
 });
 
-export const addDishes = (dishes) => ({
+export const addProducts = (products) => ({
     type: ActionTypes.ADD_PRODUCT,
-    payload: dishes
+    payload: products
 });
 
 // Register
@@ -122,8 +121,10 @@ export const loginUser = (creds) => (dispatch) => {
             //alert(response.token)
             AsyncStorage.setItem('token', response.token);
             AsyncStorage.setItem('creds', JSON.stringify(creds));
+            global.token = response.token;
+            global.creds = JSON.stringify(creds)
             // Dispatch the success action
-            //dispatch(fetchFavorites());
+            dispatch(fetchUserInfo());
             dispatch(receiveLogin(response));
         }
         else {
@@ -169,9 +170,12 @@ export const loginWithFacebookUser = (token) => (dispatch) => {
             // If login was successful, set the token in local storage
             //alert(response.token)
             AsyncStorage.setItem('token', response.token);
+            AsyncStorage.setItem('creds', JSON.stringify(creds));
+            global.token = response.token;
+            global.creds = JSON.stringify(creds)
             // Dispatch the success action
             //dispatch(fetchFavorites());
-            console.log("token 3 : "+token);
+            dispatch(fetchUserInfo());
             dispatch(receiveLogin(response));
         }
         else {
@@ -221,6 +225,53 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout())
     AsyncStorage.setItem('token', '');
     AsyncStorage.setItem('creds', '');
+    global.token = '';
+    global.creds = '';
     //dispatch(favoritesFailed("Error 401: Unauthorized"));
+    dispatch(userFailed("Error 401: Unauthorized"));
     dispatch(receiveLogout())
 }
+
+//Fetch user Informations
+export const fetchUserInfo = () => (dispatch) => {
+
+    const bearer = 'Bearer ' + global.token;
+    dispatch(userLoading(true));
+    return fetch(baseUrl + 'users', {
+            headers: {
+                'Authorization': bearer
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { 
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(uerInfo => dispatch(addUser(uerInfo)))
+        .catch(error => dispatch(userFailed(error.message)));
+        
+  }
+  
+  export const userLoading = () => ({
+      type: ActionTypes.USER_LOADING
+  });
+  
+  export const userFailed = (errmess) => ({
+      type: ActionTypes.USER_FAILED,
+      payload: errmess
+  });
+  
+  export const addUser = (uerInfo) => ({
+      type: ActionTypes.ADD_USER,
+      payload: uerInfo
+  });

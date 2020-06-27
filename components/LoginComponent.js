@@ -20,7 +20,8 @@ import * as Facebook from 'expo-facebook';
 
 const mapStateToProps = state => {
     return {
-        auth: state.auth
+        auth: state.auth,
+        userinfo: state.userinfo
     }
 }
 
@@ -223,7 +224,7 @@ const LoginScreen = (props) => {
             }
 
             {   
-                !props.auth.isLoading ? null:
+                !(props.auth.isLoading) ? null:
                 <Modal
                     animationType="slide"
                     transparent={true}

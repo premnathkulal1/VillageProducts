@@ -5,20 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faLock, faAddressCard, faHome, faList, faHeart, faCartArrowDown, faCartPlus, faShoppingBag, faSignOutAlt, faSign, faSignInAlt, } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import {
-    useTheme,
     Avatar,
+    Drawer,
     Title,
     Caption,
-    Drawer
+    Text
 } from 'react-native-paper';
 import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
 import { logoutUser } from '../redux/ActionCreators';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const mapStateToProps = state => {
     return {
+        userinfo: state.userinfo,
         auth: state.auth
     }
 }
@@ -28,7 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const Drawercontent = (props) => {
-    const paperTheme = useTheme();
+    
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -44,20 +46,18 @@ const Drawercontent = (props) => {
                             <View style={{marginLeft:15, flexDirection:'column'}}>
 
                                 {
-                                    props.auth.isAuthenticated ?
+                                    props.auth.isAuthenticated?
                                         <View>
-                                        <Title style={styles.title}>{props.auth.user.username}</Title>
-                                        <Caption style={styles.caption}>@{props.auth.user.username}</Caption>
+                                        <Title style={styles.title}>{props.userinfo.user_info.fullname}</Title>
+                                        <Caption style={styles.caption}>@{props.userinfo.user_info.username}</Caption>
                                         </View>
                                     :
                                         <View>
-                                        <Title style={styles.title}>Villiage Products</Title>
+                                        <Title style={styles.title}>VilliageProducts</Title>
                                         <Caption style={styles.caption}>@v_products</Caption>
                                         </View>
                                 }
-                                {
-                                    console.log(props.auth)
-                                }
+
                             </View>
                         </View>
 
