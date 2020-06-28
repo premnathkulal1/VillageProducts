@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { View, 
+import {
+    View, 
     Text, 
     TouchableOpacity, 
     TextInput,
@@ -18,10 +19,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import { loginUser, loginWithFacebookUser } from '../redux/ActionCreators';
 import * as Facebook from 'expo-facebook';
 
+global.login = "LOGIN_REQUEST_END";
 const mapStateToProps = state => {
     return {
         auth: state.auth,
-        userinfo: state.userinfo
+        userinfo: state.userinfo,
+        favorits: state.favorits
     }
 }
 
@@ -71,6 +74,7 @@ const LoginScreen = (props) => {
             isValidPassword: true,
             secureTextEntry: true
         });
+        global.login="LOGIN_REQUEST"
     }
 
     const facebookLogIn = async () => {
@@ -84,19 +88,16 @@ const LoginScreen = (props) => {
             permissions: ['public_profile'],
           });
           if (type === 'success') {
-
-            fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email`)
-                .then(response => response.json())
-                .then(data => {
-                    AsyncStorage.setItem('creds', JSON.stringify(data));
-                })
-                .catch(e => console.log(e))
-
             props.loginWithFacebookUser(token)
           } 
         } catch ({ message }) {
           alert(`Facebook Login Error: ${message}`);
         }
+    }
+
+    const gotoNextScreen = () => {
+        global.login = "LOGIN_REQUEST_END";
+        props.navigation.goBack();
     }
 
     return (
@@ -176,7 +177,9 @@ const LoginScreen = (props) => {
                         <Text style={styles.errorMsg}>Username and Password not matching</Text>
                     </Animatable.View>
                 }
-
+                {
+                    !(props.auth.errMess===null && props.auth.isAuthenticated && global.login=="LOGIN_REQUEST") ? null : gotoNextScreen()
+                }
                 <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
@@ -218,13 +221,8 @@ const LoginScreen = (props) => {
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
-
-            {
-                !(props.auth.errMess===null && props.auth.isAuthenticated) ? null : props.navigation.navigate('Home')
-            }
-
             {   
-                !(props.auth.isLoading || props.userinfo.isLoading) ? null:
+                !(props.auth.isLoading) ? null:
                 <Modal
                     animationType="slide"
                     transparent={true}

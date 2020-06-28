@@ -28,37 +28,27 @@ class Products extends React.Component{
     this.setState({ModelItem: this.props.products.products.filter((item) => item.name === id)[0]});
     this.setState({showModal: !this.state.showModal});
   }
-
-  static navigationOptions = {
-    title: 'Products'
-  }
-
   
   render(){
-
     const ListItem = ({item}) => {
       return (
-        <TouchableOpacity style={styles.listitem} onPress={() => this.toggleModal(item.name)}>
-          <Card
-            style={styles.listItemView}
-            featuredTitle={item.name}
-          >
-            <View style={{ alignItems: 'center', height: 200 }}>
-            <Image
-              style={{ width: 100, height: 100 }}
-              source={{uri: baseUrl+item.image}}
-            />
-            <Text style={styles.listItemName}>{item.name}</Text>
-            <Text style={styles.listItemPrice}>{item.price+' Rs'}</Text>
-            </View>
-          </Card>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.listitem} onPress={() => this.toggleModal(item.name)}>
+            <Card
+              style={styles.listItemView}
+              featuredTitle={item.name}
+            >
+              <View style={{ alignItems: 'center', height: 200 }}>
+              <Image
+                style={{ width: 100, height: 100 }}
+                source={{uri: baseUrl+item.image}}
+              />
+              <Text style={styles.listItemName}>{item.name}</Text>
+              <Text style={styles.listItemPrice}>{item.price+' Rs'}</Text>
+              </View>
+            </Card>
+          </TouchableOpacity>
       );
     };
-
-    const LoginScreen = () => {
-      this.props.navigation.navigate('Products')
-    }
 
     if(this.props.products.isLoading){
       return(
@@ -68,11 +58,14 @@ class Products extends React.Component{
     else{
       return(
         <View>
-          <FlatList 
-            data = {this.state.catogory === 'all' ? this.props.products.products : this.props.products.products.filter((item) => item.category == this.state.catogory)}
-            renderItem = {({item}) => <ListItem item={item} />}
-            numColumns={2}
-          />
+
+          <Animatable.View animation="fadeInRightBig" duration={1500}>  
+            <FlatList 
+              data = {this.state.catogory === 'all' ? this.props.products.products : this.props.products.products.filter((item) => item.category == this.state.catogory)}
+              renderItem = {({item}) => <ListItem item={item} />}
+              numColumns={2}
+            />
+          </Animatable.View>
           <Modal
             animationType={'slide'}
             transparent={false}

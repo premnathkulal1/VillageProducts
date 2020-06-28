@@ -5,6 +5,7 @@ import { Products } from './products';
 import { Auth } from './auth';
 import { Userinfo } from './userInfo';
 import { Register } from './register';
+import { Favorits } from './favorits';
 import  { persistStore, persistCombineReducers } from 'redux-persist';
 //import storage from 'redux-persist/es/storage'
 import { AsyncStorage } from 'react-native';
@@ -22,7 +23,8 @@ export const ConfigureStore = () => {
                 products: Products,
                 auth: Auth,
                 register: Register,
-                userinfo: Userinfo
+                userinfo: Userinfo,
+                favorits: Favorits
             }),
             applyMiddleware(thunk, logger)
         );

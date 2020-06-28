@@ -124,8 +124,9 @@ export const loginUser = (creds) => (dispatch) => {
             global.token = response.token;
             global.creds = JSON.stringify(creds)
             // Dispatch the success action
-            dispatch(fetchUserInfo());
             dispatch(receiveLogin(response));
+            dispatch(fetchUserInfo());
+            dispatch(fetchFavorits());
         }
         else {
             var error = new Error('Error ' + response.status);
@@ -174,8 +175,8 @@ export const loginWithFacebookUser = (token) => (dispatch) => {
             global.token = response.token;
             global.creds = JSON.stringify(creds)
             // Dispatch the success action
-            //dispatch(fetchFavorites());
             dispatch(fetchUserInfo());
+            dispatch(fetchFavorits());
             dispatch(receiveLogin(response));
         }
         else {
@@ -227,8 +228,8 @@ export const logoutUser = () => (dispatch) => {
     AsyncStorage.setItem('creds', '');
     global.token = '';
     global.creds = '';
-    //dispatch(favoritesFailed("Error 401: Unauthorized"));
     dispatch(userFailed("Error 401: Unauthorized"));
+    dispatch(favoritsFailed("Error 401: Unauthorized"))
     dispatch(receiveLogout())
 }
 
@@ -259,7 +260,6 @@ export const fetchUserInfo = () => (dispatch) => {
         .then(response => response.json())
         .then(uerInfo => dispatch(addUser(uerInfo)))
         .catch(error => dispatch(userFailed(error.message)));
-        
   }
   
   export const userLoading = () => ({
@@ -275,3 +275,77 @@ export const fetchUserInfo = () => (dispatch) => {
       type: ActionTypes.ADD_USER,
       payload: uerInfo
   });
+
+
+//Fetch user Favorits
+export const fetchFavorits = () => (dispatch) => {
+
+    const bearer = 'Bearer ' + global.token;
+    dispatch(favoritsLoading(true));
+    return fetch(baseUrl + 'favorits', {
+            headers: {
+                'Authorization': bearer
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                return response;
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { 
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(favorits => dispatch(addfavorits(favorits)))
+        .catch(error => dispatch(favoritsFailed(error.message)));     
+  }
+  
+  export const favoritsLoading = () => ({
+      type: ActionTypes.FAVORITS_LOADING
+  });
+  
+  export const favoritsFailed = (errmess) => ({
+      type: ActionTypes.FAVORITS_FAILED,
+      payload: errmess
+  });
+  
+  export const addfavorits = (favorits) => ({
+      type: ActionTypes.ADD_FAVORITS,
+      payload: favorits
+  });
+
+  //Delete user favorits
+  export const deleteFavorite = (favId) => (dispatch) => {
+
+    const bearer = 'Bearer ' + global.token;
+    //dispatch(favoritsLoading(true));
+    return fetch(baseUrl + 'favorits/'+favId, {
+        method: "DELETE",
+        //body: JSON.stringify({favId}),
+        headers: {
+          'Authorization': bearer,
+        },
+        credentials: "same-origin"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(favorits => {dispatch(fetchFavorits())})
+    .catch(error => {alert("Error while deleting your favotite"), dispatch(favoritsFailed(error))});
+};

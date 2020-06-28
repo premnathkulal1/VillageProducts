@@ -17,3 +17,7 @@ export const LOGOUT_FAILURE = 'LOGOUT_FAILURE';
 export  const USER_LOADING = 'USER_LOADING';
 export  const ADD_USER = 'ADD_USER';
 export  const USER_FAILED = 'USER_FAILED';
+
+export  const FAVORITS_LOADING = 'FAVORITS_LOADING';
+export  const ADD_FAVORITS = 'ADD_FAVORITS';
+export  const FAVORITS_FAILED = 'FAVORITS_FAILED';

@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-elements';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser, faLock, faAddressCard, faHome, faList, faHeart, faCartArrowDown, faCartPlus, faShoppingBag, faSignOutAlt, faSign, faSignInAlt, } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
@@ -21,7 +20,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 const mapStateToProps = state => {
     return {
         userinfo: state.userinfo,
-        auth: state.auth
+        auth: state.auth,
+        favorits: state.favorits
     }
 }
 
@@ -57,6 +57,9 @@ const Drawercontent = (props) => {
                                         <Caption style={styles.caption}>@v_products</Caption>
                                         </View>
                                 }
+                                {
+                                   console.log(props.auth)
+                                }
 
                             </View>
                         </View>
@@ -81,7 +84,7 @@ const Drawercontent = (props) => {
                                     <FontAwesomeIcon icon={faHeart} size={20} color={"black"} />
                                 )}
                                 label="Favorits"
-                                onPress={() => {props.navigation.navigate('Products')}}
+                                onPress={() => {props.navigation.navigate('Favorits')}}
                             />
                             <DrawerItem 
                                 icon={() => (
